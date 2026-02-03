@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QVA VATSIM Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+  <div id="sidebar">
+    <h2>VATSIM Filters</h2>
+
+    <input id="callsign" placeholder="Callsign" />
+    <input id="aircraft" placeholder="Aircraft (A320)" />
+    <input id="dep" placeholder="Departure" />
+    <input id="arr" placeholder="Arrival" />
+
+    <label>
+      <input type="checkbox" id="airborne" />
+      Airborne only
+    </label>
+
+    <button id="refresh">Refresh</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
 
