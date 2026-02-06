@@ -53,10 +53,15 @@ function renderMarkers(list) {
   clearMarkers();
 
   list.forEach(p => {
-    const marker = L.circleMarker([p.latitude, p.longitude], {
-      radius: 4,
-      color: "#4da3ff",
-      fillOpacity: 0.9
+    const icon = L.divIcon({
+      className: "",
+      html: `<div class="aircraft-icon"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    const marker = L.marker([p.latitude, p.longitude], {
+      icon
     }).addTo(map);
 
     marker.on("click", () => showPilotInfo(p));
@@ -96,4 +101,4 @@ renderSidebar(() => {
 });
 
 refresh();
-setInterval(refresh, 30000); // refresh every 30s
+setInterval(refresh, 30000);
