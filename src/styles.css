@@ -227,4 +227,17 @@ input:focus {
   transform-origin: center;
   transition: transform 0.2s linear;
 }
+/* ===== AIRCRAFT INTERACTION ===== */
+.aircraft-icon {
+  cursor: pointer;
+}
 
+.aircraft-icon:hover {
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.8);
+}
+
+.aircraft-selected {
+  background: #e10600; /* Qantas red */
+  box-shadow: 0 0 10px rgba(225,6,0,0.9);
+}
