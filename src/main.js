@@ -2,36 +2,31 @@ import { renderSidebar } from "./ui/sidebar.js";
 import { state } from "./state/store.js";
 
 /* ===== MAP SETUP ===== */
-const map = L.map("map", {
-  zoomControl: false
-}).setView([20, 0], 2);
-
+const map = L.map("map", { zoomControl: false }).setView([20, 0], 2);
 L.control.zoom({ position: "topright" }).addTo(map);
 
 L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-  {
-    attribution: "&copy; OpenStreetMap & CartoDB",
-    maxZoom: 19
-  }
+  { attribution: "&copy; OpenStreetMap & CartoDB", maxZoom: 19 }
 ).addTo(map);
 
 /* ===== STATE ===== */
 let pilots = [];
 let markers = [];
 let selectedMarker = null;
+const markerByCallsign = new Map();
 
-/* ===== LOADING INDICATOR ===== */
+/* ===== LOADING ===== */
 const loadingEl = document.getElementById("loading");
 
-/* ===== DATA FETCH ===== */
+/* ===== FETCH ===== */
 async function fetchVatsimPilots() {
   const res = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
   const data = await res.json();
   return data.pilots || [];
 }
 
-/* ===== FILTERING ===== */
+/* ===== FILTERS ===== */
 function applyFilters(list) {
   return list.filter(p => {
     if (state.filters.airborneOnly && p.groundspeed < 30) return false;
@@ -39,7 +34,6 @@ function applyFilters(list) {
     if (state.filters.aircraft && !p.flight_plan?.aircraft?.includes(state.filters.aircraft.toUpperCase())) return false;
     if (state.filters.dep && p.flight_plan?.departure !== state.filters.dep.toUpperCase()) return false;
     if (state.filters.arr && p.flight_plan?.arrival !== state.filters.arr.toUpperCase()) return false;
-    if (state.filters.fir && !p.fir?.includes(state.filters.fir.toUpperCase())) return false;
     return true;
   });
 }
@@ -48,85 +42,87 @@ function applyFilters(list) {
 function clearMarkers() {
   markers.forEach(m => map.removeLayer(m));
   markers = [];
+  markerByCallsign.clear();
   selectedMarker = null;
 }
 
 function renderMarkers(list) {
-  clearMarkers();
+  const nextMarkers = [];
 
   list.forEach(p => {
+    const key = p.callsign;
     const heading = p.heading ?? 0;
 
-    const icon = L.divIcon({
-      className: "",
-      html: `
-        <div
-          class="aircraft-icon"
-          style="transform: rotate(${heading}deg)"
-        ></div>
-      `,
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
-    });
+    let marker = markerByCallsign.get(key);
 
-    const marker = L.marker([p.latitude, p.longitude], { icon }).addTo(map);
+    if (!marker) {
+      const icon = L.divIcon({
+        className: "",
+        html: `<div class="aircraft-icon" style="transform: rotate(${heading}deg)"></div>`,
+        iconSize: [12, 12],
+        iconAnchor: [6, 6]
+      });
 
-    marker.on("click", () => {
-      // remove previous selection
-      if (selectedMarker) {
-        selectedMarker
-          .getElement()
+      marker = L.marker([p.latitude, p.longitude], { icon }).addTo(map);
+
+      marker.on("click", () => {
+        if (selectedMarker) {
+          selectedMarker.getElement()
+            ?.querySelector(".aircraft-icon")
+            ?.classList.remove("aircraft-selected");
+          selectedMarker.setZIndexOffset(0);
+        }
+
+        selectedMarker = marker;
+        marker.getElement()
           ?.querySelector(".aircraft-icon")
-          ?.classList.remove("aircraft-selected");
-        selectedMarker.setZIndexOffset(0);
-      }
+          ?.classList.add("aircraft-selected");
 
-      // set new selection
-      selectedMarker = marker;
-      marker
-        .getElement()
-        ?.querySelector(".aircraft-icon")
-        ?.classList.add("aircraft-selected");
+        marker.setZIndexOffset(1000);
+        showPilotInfo(p);
+      });
 
-      marker.setZIndexOffset(1000);
-      showPilotInfo(p);
-    });
+      markerByCallsign.set(key, marker);
+    } else {
+      marker.setLatLng([p.latitude, p.longitude]);
+      const el = marker.getElement()?.querySelector(".aircraft-icon");
+      if (el) el.style.transform = `rotate(${heading}deg)`;
+    }
 
-    markers.push(marker);
+    nextMarkers.push(marker);
   });
+
+  markers.forEach(m => {
+    if (!nextMarkers.includes(m)) map.removeLayer(m);
+  });
+
+  markers = nextMarkers;
 }
 
-/* ===== PILOT PANEL ===== */
-function showPilotInfo(pilot) {
-  const panel = document.getElementById("pilot-panel");
-  panel.innerHTML = `
-    <h3>${pilot.callsign}</h3>
-    <p><b>Aircraft:</b> ${pilot.flight_plan?.aircraft || "N/A"}</p>
-    <p><b>Route:</b> ${pilot.flight_plan?.departure || "—"} → ${pilot.flight_plan?.arrival || "—"}</p>
-    <p><b>Altitude:</b> ${pilot.altitude} ft</p>
-    <p><b>Speed:</b> ${pilot.groundspeed} kts</p>
-    <p><b>Heading:</b> ${pilot.heading ?? "—"}°</p>
+/* ===== PILOT INFO ===== */
+function showPilotInfo(p) {
+  document.getElementById("pilot-panel").innerHTML = `
+    <h3>${p.callsign}</h3>
+    <p><b>Aircraft:</b> ${p.flight_plan?.aircraft || "N/A"}</p>
+    <p><b>Route:</b> ${p.flight_plan?.departure || "—"} → ${p.flight_plan?.arrival || "—"}</p>
+    <p><b>Altitude:</b> ${p.altitude} ft</p>
+    <p><b>Speed:</b> ${p.groundspeed} kts</p>
+    <p><b>Heading:</b> ${p.heading ?? "—"}°</p>
   `;
 }
 
 /* ===== REFRESH ===== */
 async function refresh() {
   loadingEl.classList.remove("hidden");
-
   try {
     pilots = await fetchVatsimPilots();
     renderMarkers(applyFilters(pilots));
-  } catch (err) {
-    console.error("VATSIM fetch failed", err);
   } finally {
     loadingEl.classList.add("hidden");
   }
 }
 
 /* ===== INIT ===== */
-renderSidebar(() => {
-  renderMarkers(applyFilters(pilots));
-});
-
+renderSidebar(() => renderMarkers(applyFilters(pilots)));
 refresh();
 setInterval(refresh, 30000);
