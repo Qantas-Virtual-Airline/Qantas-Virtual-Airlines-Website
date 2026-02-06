@@ -241,3 +241,31 @@ input:focus {
   background: #e10600; /* Qantas red */
   box-shadow: 0 0 10px rgba(225,6,0,0.9);
 }
+/* ===== AIRCRAFT ICON ===== */
+.aircraft-icon {
+  width: 12px;
+  height: 12px;
+  background: #4da3ff;
+  clip-path: polygon(50% 0%, 65% 100%, 50% 80%, 35% 100%);
+  transform-origin: center;
+  transition: transform 0.3s linear;
+  cursor: pointer;
+}
+
+.aircraft-icon:hover {
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255,255,255,0.8);
+}
+
+.aircraft-selected {
+  background: #e10600;
+  box-shadow: 0 0 10px rgba(225,6,0,0.9);
+}
+
+/* Smooth movement */
+.leaflet-marker-icon {
+  transition-property: transform, left, top;
+  transition-timing-function: linear;
+}
+
+
