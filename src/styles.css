@@ -187,3 +187,35 @@ input:focus {
 .hidden {
   display: none;
 }
+/* ===== RESPONSIVE POLISH ===== */
+
+/* Medium screens (laptops / small desktops) */
+@media (max-width: 1100px) {
+  #app {
+    grid-template-columns: 240px 1fr;
+  }
+
+  #pilot-panel {
+    display: none;
+  }
+}
+
+/* Small screens (tablets / phones) */
+@media (max-width: 700px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  #sidebar {
+    position: relative;
+    max-height: 45vh;
+    border-right: none;
+    border-bottom: 1px solid #222;
+  }
+
+  #map {
+    height: 55vh;
+  }
+}
+
