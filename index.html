@@ -2,29 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>QVA VATSIM Map</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <title>QVA Live Map</title>
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
-  <div id="sidebar">
-    <h2>VATSIM Filters</h2>
+  <div id="app">
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+      <h2>QVA Live Map</h2>
 
-    <input id="callsign" placeholder="Callsign" />
-    <input id="aircraft" placeholder="Aircraft (A320)" />
-    <input id="dep" placeholder="Departure" />
-    <input id="arr" placeholder="Arrival" />
+      <!-- Loading indicator -->
+      <div id="loading" class="loading hidden">
+        <span class="plane">✈️</span>
+        <span class="loading-text">Qantas traffic updating</span>
+      </div>
+    </div>
 
-    <label>
-      <input type="checkbox" id="airborne" />
-      Airborne only
-    </label>
+    <!-- MAP -->
+    <div id="map"></div>
 
-    <button id="refresh">Refresh</button>
+    <!-- PILOT INFO PANEL -->
+    <div id="pilot-panel">
+      <h3>Pilot Info</h3>
+      <p>Select an aircraft</p>
+    </div>
   </div>
 
-  <div id="map"></div>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <script type="module" src="/src/main.js"></script>
+  <!-- Main app -->
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
-
