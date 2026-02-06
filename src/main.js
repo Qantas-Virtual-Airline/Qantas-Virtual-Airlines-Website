@@ -53,16 +53,21 @@ function renderMarkers(list) {
   clearMarkers();
 
   list.forEach(p => {
+    const heading = p.heading ?? 0;
+
     const icon = L.divIcon({
       className: "",
-      html: `<div class="aircraft-icon"></div>`,
+      html: `
+        <div
+          class="aircraft-icon"
+          style="transform: rotate(${heading}deg)"
+        ></div>
+      `,
       iconSize: [12, 12],
       iconAnchor: [6, 6]
     });
 
-    const marker = L.marker([p.latitude, p.longitude], {
-      icon
-    }).addTo(map);
+    const marker = L.marker([p.latitude, p.longitude], { icon }).addTo(map);
 
     marker.on("click", () => showPilotInfo(p));
     markers.push(marker);
@@ -78,6 +83,7 @@ function showPilotInfo(pilot) {
     <p><b>Route:</b> ${pilot.flight_plan?.departure || "—"} → ${pilot.flight_plan?.arrival || "—"}</p>
     <p><b>Altitude:</b> ${pilot.altitude} ft</p>
     <p><b>Speed:</b> ${pilot.groundspeed} kts</p>
+    <p><b>Heading:</b> ${pilot.heading ?? "—"}°</p>
   `;
 }
 
