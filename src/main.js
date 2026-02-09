@@ -31,15 +31,33 @@ async function fetchVatsimPilots() {
 /* ===== FILTERS (QFA ONLY) ===== */
 function applyFilters(list) {
   return list.filter(p => {
-    // 🚫 HARD FILTER — ONLY QANTAS
-    if (!p.callsign.startsWith("QFA")) return false;
-
-    // existing optional filters still work
     if (state.filters.airborneOnly && p.groundspeed < 30) return false;
-    if (state.filters.callsign && !p.callsign.includes(state.filters.callsign.toUpperCase())) return false;
-    if (state.filters.aircraft && !p.flight_plan?.aircraft?.includes(state.filters.aircraft.toUpperCase())) return false;
-    if (state.filters.dep && p.flight_plan?.departure !== state.filters.dep.toUpperCase()) return false;
-    if (state.filters.arr && p.flight_plan?.arrival !== state.filters.arr.toUpperCase()) return false;
+
+    if (
+      state.filters.callsign &&
+      !p.callsign.includes(state.filters.callsign.toUpperCase())
+    ) return false;
+
+    if (
+      state.filters.aircraft &&
+      !p.flight_plan?.aircraft?.includes(state.filters.aircraft.toUpperCase())
+    ) return false;
+
+    if (
+      state.filters.dep &&
+      p.flight_plan?.departure !== state.filters.dep.toUpperCase()
+    ) return false;
+
+    if (
+      state.filters.arr &&
+      p.flight_plan?.arrival !== state.filters.arr.toUpperCase()
+    ) return false;
+
+    // ✨ Altitude bands
+    const alt = p.altitude || 0;
+    if (state.filters.altitudeBand === "LOW" && alt >= 10000) return false;
+    if (state.filters.altitudeBand === "CRUISE" && (alt < 10000 || alt >= 30000)) return false;
+    if (state.filters.altitudeBand === "HIGH" && alt < 30000) return false;
 
     return true;
   });
