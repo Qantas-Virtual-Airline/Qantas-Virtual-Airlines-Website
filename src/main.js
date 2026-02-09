@@ -28,27 +28,24 @@ async function fetchVatsimPilots() {
   return data.pilots || [];
 }
 
-/* ===== FILTERS ===== */
+/* ===== FILTERS (QFA ONLY) ===== */
 function applyFilters(list) {
   return list.filter(p => {
+    // 🚫 HARD FILTER — ONLY QANTAS
+    if (!p.callsign.startsWith("QFA")) return false;
+
+    // existing optional filters still work
     if (state.filters.airborneOnly && p.groundspeed < 30) return false;
     if (state.filters.callsign && !p.callsign.includes(state.filters.callsign.toUpperCase())) return false;
     if (state.filters.aircraft && !p.flight_plan?.aircraft?.includes(state.filters.aircraft.toUpperCase())) return false;
     if (state.filters.dep && p.flight_plan?.departure !== state.filters.dep.toUpperCase()) return false;
     if (state.filters.arr && p.flight_plan?.arrival !== state.filters.arr.toUpperCase()) return false;
+
     return true;
   });
 }
 
 /* ===== MARKERS ===== */
-function clearMarkers() {
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
-  markerByCallsign.clear();
-  trailByCallsign.clear();
-  selectedMarker = null;
-}
-
 function renderMarkers(list) {
   const nextMarkers = [];
 
@@ -56,7 +53,7 @@ function renderMarkers(list) {
     const key = p.callsign;
     const heading = p.heading ?? 0;
     const speed = Math.max(p.groundspeed || 200, 100);
-    const duration = Math.max(30000 / speed, 0.3); // seconds
+    const duration = Math.max(30000 / speed, 0.3);
 
     let marker = markerByCallsign.get(key);
 
@@ -108,7 +105,7 @@ function renderMarkers(list) {
 
     if (trail.length > 1) {
       L.polyline(trail, {
-        color: "#4da3ff",
+        color: "#e10600", // Qantas red
         weight: 1,
         opacity: 0.35
       }).addTo(map);
