@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Qantas Virtual</title>
+  <link rel="stylesheet" href="../styles/main.css" />
+</head>
+<body>
+
+  <div id="navbar"></div>
+
+  <main>
+    <h1>Qantas Virtual Airways</h1>
+    <p>Welcome to the VA.</p>
+  </main>
+
+  <script type="module">
+    import { renderNavbar } from "../src/ui/navbar.js";
+    document.getElementById("navbar").innerHTML = renderNavbar();
+  </script>
+</body>
+</html>
