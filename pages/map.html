@@ -2,19 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Map</title>
+  <title>Live Qantas Map</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
   <link rel="stylesheet" href="../styles/main.css" />
+
+  <style>
+    #map {
+      height: 80vh;
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="navbar"></div>
 
   <main class="container">
-    <h1>Live VATSIM Map</h1>
-    <p>Qantas-only traffic will appear here.</p>
-    <div class="placeholder">[ Map loads in Phase 3 ]</div>
+    <h1>Live VATSIM — Qantas Only</h1>
+    <div id="map"></div>
   </main>
 
   <div id="footer"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="../main.js"></script>
+  <script type="module" src="../src/map/vatsim.js"></script>
 </body>
 </html>
