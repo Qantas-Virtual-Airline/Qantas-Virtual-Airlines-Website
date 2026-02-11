@@ -46,3 +46,11 @@ body {
   background: #151a26;
   margin-top: 40px;
 }
+.leaflet-container {
+  background: #0b0e14;
+}
+.user {
+  margin-right: 10px;
+  opacity: 0.85;
+}
+
