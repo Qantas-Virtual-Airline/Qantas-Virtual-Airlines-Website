@@ -6,6 +6,23 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 const aircraftLayer = L.layerGroup().addTo(map);
+const trailLayer = L.layerGroup().addTo(map);
+
+// store last positions
+const trails = {};
+
+async function loadFIR() {
+  const res = await fetch("../src/map/fir-au.json");
+  const fir = await res.json();
+
+  L.geoJSON(fir, {
+    style: {
+      color: "#00c2ff",
+      weight: 2,
+      fillOpacity: 0.05
+    }
+  }).addTo(map);
+}
 
 async function loadVatsim() {
   aircraftLayer.clearLayers();
@@ -20,6 +37,18 @@ async function loadVatsim() {
   pilots.forEach(p => {
     if (!p.latitude || !p.longitude) return;
 
+    // trails
+    if (!trails[p.callsign]) trails[p.callsign] = [];
+    trails[p.callsign].push([p.latitude, p.longitude]);
+    trails[p.callsign] = trails[p.callsign].slice(-20);
+
+    L.polyline(trails[p.callsign], {
+      color: "#ffb000",
+      weight: 2,
+      opacity: 0.6
+    }).addTo(trailLayer);
+
+    // aircraft marker
     const marker = L.circleMarker(
       [p.latitude, p.longitude],
       {
@@ -41,6 +70,6 @@ async function loadVatsim() {
   });
 }
 
-// Initial + refresh every 30s
+loadFIR();
 loadVatsim();
 setInterval(loadVatsim, 30000);
