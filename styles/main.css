@@ -53,4 +53,7 @@ body {
   margin-right: 10px;
   opacity: 0.85;
 }
+.leaflet-pane path {
+  transition: all 0.3s linear;
+}
 
