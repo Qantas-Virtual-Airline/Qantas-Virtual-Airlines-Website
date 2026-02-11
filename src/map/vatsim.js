@@ -7,8 +7,8 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 const aircraftLayer = L.layerGroup().addTo(map);
 const trailLayer = L.layerGroup().addTo(map);
+const labelLayer = L.layerGroup().addTo(map);
 
-// store last positions
 const trails = {};
 
 async function loadFIR() {
@@ -26,6 +26,8 @@ async function loadFIR() {
 
 async function loadVatsim() {
   aircraftLayer.clearLayers();
+  trailLayer.clearLayers();
+  labelLayer.clearLayers();
 
   const res = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
   const data = await res.json();
@@ -37,10 +39,10 @@ async function loadVatsim() {
   pilots.forEach(p => {
     if (!p.latitude || !p.longitude) return;
 
-    // trails
+    // ---- TRAILS ----
     if (!trails[p.callsign]) trails[p.callsign] = [];
     trails[p.callsign].push([p.latitude, p.longitude]);
-    trails[p.callsign] = trails[p.callsign].slice(-20);
+    trails[p.callsign] = trails[p.callsign].slice(-25);
 
     L.polyline(trails[p.callsign], {
       color: "#ffb000",
@@ -48,25 +50,30 @@ async function loadVatsim() {
       opacity: 0.6
     }).addTo(trailLayer);
 
-    // aircraft marker
-    const marker = L.circleMarker(
-      [p.latitude, p.longitude],
-      {
-        radius: 6,
-        color: "#e4002b",
-        fillColor: "#e4002b",
-        fillOpacity: 0.9
-      }
-    );
-
-    marker.bindPopup(`
+    // ---- AIRCRAFT DOT ----
+    L.circleMarker([p.latitude, p.longitude], {
+      radius: 6,
+      color: "#e4002b",
+      fillColor: "#e4002b",
+      fillOpacity: 0.9
+    })
+    .bindPopup(`
       <strong>${p.callsign}</strong><br/>
       ${p.departure} → ${p.arrival}<br/>
       FL${p.flight_level}<br/>
       GS ${p.groundspeed}kt
-    `);
+    `)
+    .addTo(aircraftLayer);
 
-    marker.addTo(aircraftLayer);
+    // ---- CALLSIGN LABEL ----
+    L.marker([p.latitude, p.longitude], {
+      icon: L.divIcon({
+        className: "aircraft-label",
+        html: p.callsign,
+        iconSize: [60, 16],
+        iconAnchor: [30, -10]
+      })
+    }).addTo(labelLayer);
   });
 }
 
