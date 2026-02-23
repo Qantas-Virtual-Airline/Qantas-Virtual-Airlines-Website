@@ -2,56 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Pilot Dashboard</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="../styles/main.css" />
 </head>
 <body>
-  <div id="navbar"></div>
 
-  <main class="container">
-    <h1>Pilot Dashboard</h1>
+<div id="navbar"></div>
 
-    <!-- STATS -->
-    <section class="cards">
-      <div class="card"><h3>Flights</h3><p id="totalFlights">—</p></div>
-      <div class="card"><h3>Hours</h3><p id="totalHours">—</p></div>
-      <div class="card"><h3>Rank</h3><p id="rank">—</p></div>
-    </section>
+<main class="container">
+  <h1>Pilot Dashboard</h1>
+</main>
 
-    <!-- GRAPH -->
-    <section>
-      <h2>Hours Over Time</h2>
-      <canvas id="hoursChart" height="120"></canvas>
-    </section>
+<div id="footer"></div>
 
-    <!-- FLIGHTS -->
-    <section>
-      <h2>Recent Flights</h2>
-      <table class="table">
-        <thead>
-          <tr><th>Flight</th><th>Route</th><th>Hours</th><th>Date</th></tr>
-        </thead>
-        <tbody id="flightsTable"></tbody>
-      </table>
-    </section>
+<div id="vatsim-footer">
+  <img src="https://vatsim.net/images/vatsim_logo.png">
+  <span>Not affiliated with Qantas. Created for VATSIM use only.</span>
+</div>
 
-    <!-- PIREP -->
-    <section>
-      <h2>Submit PIREP</h2>
-      <form id="pirepForm">
-        <input placeholder="Callsign" id="cs" required />
-        <input placeholder="Route (YSSY‑YMML)" id="rt" required />
-        <input type="number" step="0.1" placeholder="Hours" id="hr" required />
-        <button type="submit">Submit</button>
-      </form>
-      <p id="pirepStatus"></p>
-    </section>
-  </main>
-
-  <div id="footer"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="../main.js"></script>
-  <script type="module" src="../src/dashboard/ui.js"></script>
+<script type="module" src="../main.js"></script>
 </body>
 </html>
