@@ -17,3 +17,6 @@ export function isLoggedIn() {
 export function getUser() {
   return getSession();
 }
+export function isAdmin() {
+  return localStorage.getItem("role") === "Directors";
+}
