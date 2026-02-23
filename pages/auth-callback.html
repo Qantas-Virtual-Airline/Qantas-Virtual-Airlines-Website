@@ -1,23 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Auth Callback</title>
 </head>
 <body>
-  <p>Logging you in…</p>
 
-  <script type="module">
-    import { saveSession } from "../src/auth/session.js";
+<p>Logging in...</p>
 
-    const params = new URLSearchParams(window.location.search);
+<div id="vatsim-footer">
+  <img src="https://vatsim.net/images/vatsim_logo.png">
+  <span>Not affiliated with Qantas. Created for VATSIM use only.</span>
+</div>
 
-    saveSession({
-      user: params.get("user"),
-      role: params.get("role")
-    });
-
-    window.location.href = "/pages/dashboard.html";
-  </script>
+<script type="module" src="../main.js"></script>
 </body>
 </html>
