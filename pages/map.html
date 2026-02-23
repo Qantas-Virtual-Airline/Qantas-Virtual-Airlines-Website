@@ -2,35 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Live Qantas Map</title>
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <title>Map</title>
   <link rel="stylesheet" href="../styles/main.css" />
-
-  <style>
-    #map {
-      height: 80vh;
-      width: 100%;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-  </style>
 </head>
 <body>
-  <div id="navbar"></div>
 
-  <main class="container">
-    <h1>Live VATSIM — Qantas Only</h1>
-    <div id="map"></div>
-  </main>
+<div id="navbar"></div>
 
-  <div id="footer"></div>
+<main class="container">
+  <h1>Live Map</h1>
+  <div id="map"></div>
+</main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script type="module" src="../main.js"></script>
-  <script type="module" src="../src/map/vatsim.js"></script>
+<div id="footer"></div>
+
+<div id="vatsim-footer">
+  <img src="https://vatsim.net/images/vatsim_logo.png">
+  <span>Not affiliated with Qantas. Created for VATSIM use only.</span>
+</div>
+
+<script type="module" src="../main.js"></script>
 </body>
 </html>
