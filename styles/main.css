@@ -112,6 +112,10 @@ body {
   width: 100%;
   border-collapse: collapse;
 }
+form input, form button {
+  padding: 8px;
+  margin-right: 6px;
+}
 
 .table th, .table td {
   padding: 10px;
