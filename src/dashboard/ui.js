@@ -1,24 +1,24 @@
-import { getPilotStats, getRecentFlights } from "./data.js";
 import { isLoggedIn } from "../auth/auth.js";
+import { getPilotStats, getRecentFlights } from "./data.js";
+import { renderHoursChart } from "./graphs.js";
+import { bindPIREP } from "./pireps.js";
 
-if (!isLoggedIn()) {
-  window.location.href = "/pages/index.html";
-}
+if (!isLoggedIn()) location.href = "/pages/index.html";
 
 const stats = getPilotStats();
+totalFlights.textContent = stats.flights;
+totalHours.textContent = stats.hours.toFixed(1);
+rank.textContent = stats.rank;
 
-document.getElementById("totalFlights").textContent = stats.flights;
-document.getElementById("totalHours").textContent = stats.hours.toFixed(1);
-document.getElementById("rank").textContent = stats.rank;
-
-const table = document.getElementById("flightsTable");
 getRecentFlights().forEach(f => {
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${f.callsign}</td>
-    <td>${f.route}</td>
-    <td>${f.hours}</td>
-    <td>${f.date}</td>
-  `;
-  table.appendChild(row);
+  flightsTable.innerHTML += `
+    <tr>
+      <td>${f.cs}</td>
+      <td>${f.rt}</td>
+      <td>${f.hr}</td>
+      <td>${f.dt}</td>
+    </tr>`;
 });
+
+renderHoursChart();
+bindPIREP();
